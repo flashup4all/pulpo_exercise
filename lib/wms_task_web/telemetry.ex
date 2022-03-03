@@ -1,4 +1,8 @@
 defmodule WmsTaskWeb.Telemetry do
+  @moduledoc """
+    Telemetry
+    activity monitor
+  """
   use Supervisor
   import Telemetry.Metrics
 

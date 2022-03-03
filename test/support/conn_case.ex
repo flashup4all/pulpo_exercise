@@ -38,6 +38,16 @@ defmodule WmsTaskWeb.ConnCase do
       Ecto.Adapters.SQL.Sandbox.mode(WmsTask.Repo, {:shared, self()})
     end
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn = Phoenix.ConnTest.build_conn()
+
+    {:ok, %{body: %{"access_token" => access_token}}} =
+      WmsTaskWeb.PageController.authenticate(%{
+        "username" => "felipe_user1",
+        "password" => "felipe_user1"
+      })
+
+    auth_conn = Plug.Conn.put_req_header(conn, "authorization", "Bearer #{access_token}")
+
+    {:ok, %{conn: conn, auth_conn: auth_conn}}
   end
 end

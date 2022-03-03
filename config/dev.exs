@@ -2,10 +2,10 @@ use Mix.Config
 
 # Configure your database
 config :wms_task, WmsTask.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "wms_task_dev",
-  hostname: "localhost",
+  username: System.get_env("PGUSER"),
+  password: System.get_env("PGPASSWORD"),
+  database: System.get_env("PGDATABASE"),
+  hostname: System.get_env("PGHOST"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -74,3 +74,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+
