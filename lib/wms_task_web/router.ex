@@ -13,18 +13,27 @@ defmodule WmsTaskWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticated do
+    plug WmsTaskWeb.Plugs.Auth
+  end
+
   scope "/", WmsTaskWeb do
-    pipe_through :browser
+    pipe_through :api
+
+    post "/login", PageController, :auth
+    # get "/", PageController, :index
+    # get "/orders/live", PageController, :get_orders_live
+    # get "/orders", PageController, :get_orders
+  end
+
+  # Other scopes may use custom stacks.
+  scope "/", WmsTaskWeb do
+    pipe_through :authenticated
 
     get "/", PageController, :index
     get "/orders/live", PageController, :get_orders_live
     get "/orders", PageController, :get_orders
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", WmsTaskWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #

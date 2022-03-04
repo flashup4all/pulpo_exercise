@@ -27,10 +27,10 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :wms_task, WmsTaskWeb.Scheduler,
-       jobs: [
-         # Every 1 minute
-         {"*/1 * * * *",   fn -> WmsTaskWeb.PageController.sync_orders() end},
-       ]
+  jobs: [
+    # Every 1 minute
+    {"*/1 * * * *", fn -> WmsTaskWeb.PageController.sync_orders() end}
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

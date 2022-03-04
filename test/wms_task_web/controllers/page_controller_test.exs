@@ -1,23 +1,38 @@
 defmodule WmsTaskWeb.PageControllerTest do
   use WmsTaskWeb.ConnCase
 
-  test "GET /", %{conn: conn} do
-    conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+  @valid_login_data %{"username" => "felipe_user1", "password" => "felipe_user1"}
+
+  describe("authentication") do
+    test "GET /login", %{conn: conn} do
+      conn = post(conn, Routes.page_path(conn, :auth), @valid_login_data)
+
+      assert %{
+               "access_token" => access_token,
+               "expires_in" => expires_in,
+               "token_type" => "bearer"
+             } = json_response(conn, 200)
+    end
   end
 
-  test "GET /orders/live", %{conn: conn} do
-    conn = get(conn, "/orders/live")
-    response = json_response(conn, 200)
-    assert response |> IO.inspect
-    assert length(response["orders"]) == 10
-  end
+  describe("Get orders") do
+    setup %{auth_conn: auth_conn} do
+      {:ok, auth_conn: put_req_header(auth_conn, "accept", "application/json")}
+    end
 
-  test "sync", %{conn: conn} do
-    WmsTaskWeb.PageController.sync_orders(5000)
-    conn = get(conn, "/orders")
-    response = json_response(conn, 200)
-    assert response |> IO.inspect
-    assert length(response["orders"]) == 10
+    test "GET /orders/live", %{auth_conn: auth_conn} do
+      conn = get(auth_conn, "/orders/live")
+      response = json_response(conn, 200)
+      assert response
+      assert Map.has_key?(response, "orders")
+    end
+
+    test "sync", %{auth_conn: auth_conn} do
+      # WmsTaskWeb.PageController.sync_orders(auth_conn, 5000)
+      conn = get(auth_conn, "/orders")
+      response = json_response(conn, 200)
+      assert response
+      assert Map.has_key?(response, "orders")
+    end
   end
 end

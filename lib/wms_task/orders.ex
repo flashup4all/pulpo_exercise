@@ -1,22 +1,39 @@
 defmodule WmsTask.Orders do
-  use Ecto.Schema
-  import Ecto.Changeset
+  @moduledoc """
+    Orders functions
+  """
 
-  schema "orders" do
-    field :number, :string
-    field :packing, :map
-    field :order_updated, :naive_datetime
-    field :packing_number, :string
-    field :picking_numbers, :string
-    field :pickings, :map
+  alias WmsTask.Orders.Order
+  alias WmsTask.Repo
 
-    timestamps()
+  @doc """
+  Creates a order.
+
+  ## Examples
+
+      iex> create_order(%{field: value})
+      {:ok, %Piking{}}
+
+      iex> create_order(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_order(attrs \\ %{}) do
+    %Order{}
+    |> Order.changeset(attrs)
+    |> Repo.insert()
   end
 
-  @doc false
-  def changeset(orders, attrs) do
-    orders
-    |> cast(attrs, [:number, :order_updated, :picking_numbers, :packing_number, :pickings, :packing])
-    |> validate_required([:number, :order_updated])
+  @doc """
+  Returns the list of pickings.
+
+  ## Examples
+
+      iex> list_pickings()
+      [%Piking{}, ...]
+
+  """
+  def list_orders do
+    Repo.all(Order)
   end
 end
